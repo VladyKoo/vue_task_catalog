@@ -1,28 +1,17 @@
 <template>
-  <div id="app">
-    <h1>Каталог товаров</h1>
-    <ProductFilter></ProductFilter>
+  <div class="app">
+    <div class="app__container">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
-import ProductFilter from "./components/ProductFilter";
 export default {
-  name: "App",
-  components: { ProductFilter },
-  data: () => ({})
+  name: "App"
 };
 </script>
 
 <style lang="scss">
-@import "~normalize.css";
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  max-width: 900px;
-  margin: 0 auto;
-  background-color: #fff;
-  height: 100vh;
-  padding: 20px;
-}
+@import "./styles/style.scss";
 </style>
