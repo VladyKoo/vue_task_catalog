@@ -2,65 +2,59 @@
   <div>
     <div
       class="multiselect"
-      :tabindex="searchable ? -1 : 0"
+      :tabindex="-1"
       @focus="activate($event)"
-      @blur.prevent="deactivate($event)"
+      @blur="deactivate($event)"
     >
-      <div class="multiselect__tags" v-show="searchable">
-        <div class="multiselect__tags-wrap">
-          <template v-for="(option, index) of propsValue" @mousedown.prevent>
+      <div class="multiselect__selector">
+        <div class="multiselect__tags" v-show="propsValue.length > 0">
+          <template v-for="(option, index) of propsValue">
             <span class="multiselect__tag" :key="index">
-              <span v-text="option"></span>
+              <span>{{ option }}</span>
               <i
-                tabindex="1"
                 @mousedown.prevent="removeElement(option)"
                 class="multiselect__tag-icon"
               ></i>
             </span>
           </template>
         </div>
+
+        <input
+          class="multiselect__input"
+          v-show="searchable"
+          type="text"
+          placeholder="Выберите значение"
+          autocomplete="off"
+          @focus="activate($event)"
+          @blur="deactivate($event)"
+          @input="updateSearch($event.target.value)"
+        />
       </div>
-      <input
-        class="multiselect__input"
-        v-show="searchable"
-        type="text"
-        placeholder="Выберите значение"
-        autocomplete="off"
-        tabindex="0"
-        @input="select($event.target.value)"
-        @focus.prevent="activate($event)"
-        @blur.prevent="deactivate($event)"
-      />
+
       <transition name="multiselect__overlay">
         <div
           class="multiselect__content-wrapper"
           v-show="isOpen"
-          @focus="activate"
-          tabindex="-1"
           @mousedown.prevent
         >
-          <ul class="multiselect__content" :style="contentStyle">
+          <ul class="multiselect__content">
             <template>
-              <li
-                class="multiselect__element"
-                v-for="(option, index) of propsOptions"
-                :key="index"
-              >
+              <li v-for="(option, index) of filteredOptions" :key="index">
                 <span
-                  :class="optionSelected(option)"
-                  @click.stop="select(option)"
                   class="multiselect__option"
+                  :class="optionSelected(option)"
+                  @click.stop="selectOption(option)"
                 >
                   {{ option }}
                 </span>
               </li>
             </template>
-            <li v-show="0">
+            <li v-show="options.length > 0 && filteredOptions.length === 0">
               <span class="multiselect__option">
-                Элемент не обнаружен.
+                Элемент не найден.
               </span>
             </li>
-            <li v-show="propsOptions.length === 0">
+            <li v-show="options.length === 0">
               <span class="multiselect__option">
                 Лист пуст.
               </span>
@@ -87,20 +81,31 @@ export default {
     }
   },
   data: () => ({
-    isOpen: true,
-    searchable: true
+    isOpen: false,
+    searchable: true,
+    search: ""
   }),
   computed: {
     propsValue() {
       return this.value || [];
     },
-    propsOptions() {
-      return this.options;
+    filteredOptions() {
+      const search = this.search.toLowerCase().trim() || "";
+      const newArray = this.options.slice().filter(elem => {
+        if (elem.toLowerCase().indexOf(search) < 0) {
+          return false;
+        } else return true;
+      });
+      return newArray;
     },
-    contentStyle() {
-      return !this.options.length
-        ? { display: "inline-block" }
-        : { display: "block" };
+    inputStyle() {
+      if (this.searchable) {
+        // Hide input by setting the width to 0 allowing it to receive focus
+        return this.isOpen
+          ? { width: "100%" }
+          : { width: "0", position: "absolute", padding: "0" };
+      }
+      return "";
     }
   },
   methods: {
@@ -109,30 +114,21 @@ export default {
       this.isOpen = true;
       console.log("Active");
       console.log(event);
-
-      // console.log("isOpen = " + this.isOpen);
-      // console.log("searchable = " + this.searchable);
     },
     deactivate(event) {
       if (this.propsValue.length === 0) this.searchable = true;
       else this.searchable = false;
-
       this.isOpen = false;
       console.log("Diactive");
       console.log(event);
-
-      // console.log("isOpen = " + this.isOpen);
-      // console.log("searchable = " + this.searchable);
     },
-    select(option) {
-      console.log(option);
-      console.log(this.isSelected(option));
-
+    updateSearch(value) {
+      this.search = value;
+    },
+    selectOption(option) {
       if (this.isSelected(option)) this.removeElement(option);
       else {
         const array = this.value.slice();
-        console.log(this.options);
-
         array.push(option);
         this.$emit("input", array);
       }

@@ -5,9 +5,9 @@
     </header>
 
     <div class="catalog">
-      <div class=" filter-btn" @click="filterIsVisible = !filterIsVisible">
+      <!-- <div class=" filter-btn" @click="filterIsVisible = !filterIsVisible">
         Фильтр
-      </div>
+      </div> -->
       <div
         :class="{ 'filter-is-visible': filterIsVisible }"
         class="catalog__content"

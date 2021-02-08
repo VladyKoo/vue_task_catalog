@@ -3,6 +3,7 @@
 
 .filter__container {
   background: #fff;
+  max-width: 250px;
 }
 
 .filter__form {
@@ -14,7 +15,7 @@
 .form {
   &__input {
     margin: 10px 0;
-    padding: 0px 40px 0px 12px;
+    padding: 0px 20px 0px 12px;
     height: 34px;
     width: 100%;
     background: rgba(234, 234, 234, 0.5);

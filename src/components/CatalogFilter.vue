@@ -29,7 +29,6 @@
           <input type="checkbox" />
           <input type="checkbox" />
         </div> -->
-        <p>{{ value }}</p>
       </form>
     </div>
   </div>
@@ -43,7 +42,19 @@ export default {
   props: {},
   data: () => ({
     value: [],
-    options: ["opt-0", "opt-1", "opt-2", "opt-3"]
+    // options: [
+    //   "Option-000000000000000000000000000",
+    //   "Opt-1",
+    //   "Opt-2",
+    //   "Opt-3.1",
+    //   "Opt-3",
+    //   "Opt-4",
+    //   "Opt-5",
+    //   "Opt-6",
+    //   "Opt-7",
+    //   "Opt-8s"
+    // ]
+    options: ["Opt-1", "Opt-2", "Opt-3.1", "Opt-3", "Opt-4"]
     // options: []
   }),
   computed: {},
