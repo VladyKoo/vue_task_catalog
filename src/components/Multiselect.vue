@@ -3,8 +3,8 @@
     <div
       class="multiselect"
       :tabindex="-1"
-      @focus="activate($event)"
-      @blur="deactivate($event)"
+      @focus="activate()"
+      @blur="deactivate()"
     >
       <div class="multiselect__selector">
         <div class="multiselect__tags" v-show="propsValue.length > 0">
@@ -21,22 +21,18 @@
 
         <input
           class="multiselect__input"
-          v-show="searchable"
           type="text"
           placeholder="Выберите значение"
           autocomplete="off"
-          @focus="activate($event)"
-          @blur="deactivate($event)"
-          @input="updateSearch($event.target.value)"
+          ref="search"
+          @focus.prevent="activate()"
+          @blur.prevent="deactivate()"
+          v-model="search"
         />
       </div>
 
       <transition name="multiselect__overlay">
-        <div
-          class="multiselect__content-wrapper"
-          v-show="isOpen"
-          @mousedown.prevent
-        >
+        <div class="multiselect__content-wrapper" v-show="isOpen">
           <ul class="multiselect__content">
             <template>
               <li v-for="(option, index) of filteredOptions" :key="index">
@@ -69,7 +65,10 @@
 <script>
 export default {
   name: "Multiselect",
-  components: {},
+  model: {
+    prop: "value",
+    event: "changeValue"
+  },
   props: {
     value: {
       type: Array,
@@ -82,7 +81,6 @@ export default {
   },
   data: () => ({
     isOpen: false,
-    searchable: true,
     search: ""
   }),
   computed: {
@@ -97,40 +95,29 @@ export default {
         } else return true;
       });
       return newArray;
-    },
-    inputStyle() {
-      if (this.searchable) {
-        // Hide input by setting the width to 0 allowing it to receive focus
-        return this.isOpen
-          ? { width: "100%" }
-          : { width: "0", position: "absolute", padding: "0" };
-      }
-      return "";
     }
   },
+
   methods: {
-    activate(event) {
-      if (this.propsValue.length > 0) this.searchable = true;
+    activate() {
+      if (this.isOpen) return;
       this.isOpen = true;
-      console.log("Active");
-      console.log(event);
+      this.search = "";
+      this.$nextTick(() => this.$refs.search.focus());
     },
-    deactivate(event) {
-      if (this.propsValue.length === 0) this.searchable = true;
-      else this.searchable = false;
+    deactivate() {
+      if (!this.isOpen) return;
       this.isOpen = false;
-      console.log("Diactive");
-      console.log(event);
+      this.search = "";
+      this.$refs.search.blur();
     },
-    updateSearch(value) {
-      this.search = value;
-    },
+
     selectOption(option) {
       if (this.isSelected(option)) this.removeElement(option);
       else {
         const array = this.value.slice();
         array.push(option);
-        this.$emit("input", array);
+        this.$emit("changeValue", array);
       }
     },
     removeElement(option) {
@@ -139,7 +126,7 @@ export default {
         .slice(0, index)
         .concat(this.value.slice(index + 1));
 
-      this.$emit("input", newValue);
+      this.$emit("changeValue", newValue);
     },
     isSelected(option) {
       const index = this.value.indexOf(option);
