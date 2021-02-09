@@ -15,7 +15,7 @@
           <span>{{ `Цена: ${propsProduct.price} р` }}</span>
         </div>
         <div class="products__amount">
-          <span>{{ `В наличие ${propsProduct.amount} шт.` }}</span>
+          <span>{{ `В наличии ${propsProduct.amount} шт.` }}</span>
         </div>
       </div>
     </div>
