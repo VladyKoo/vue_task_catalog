@@ -36,6 +36,7 @@
             type="number"
             placeholder="От"
             min="0"
+            :value="rangeValue.from"
             @input="updateRange($event.target.value, 'from')"
           />
           <input
@@ -43,6 +44,7 @@
             type="number"
             placeholder="До"
             min="0"
+            :value="rangeValue.to"
             @input="updateRange($event.target.value, 'to')"
           />
         </div>
