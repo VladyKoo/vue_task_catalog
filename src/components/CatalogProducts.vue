@@ -1,8 +1,23 @@
 <template>
-  <div>
-    <div class="products__container">
-      <img src="../assets/brake-rotor.jpg" alt="brake-rotor" />
-      <h3>Brake rotor</h3>
+  <div class="products">
+    <div class="products__content-wrapper">
+      <div class="products__content">
+        <div class="products__link">
+          <router-link :to="`/brake-rotor/${propsProduct.slug}`">
+            <img :src="getImage" alt="brake-rotor" />
+            <span>{{ propsProduct.name }}</span>
+          </router-link>
+        </div>
+        <div class="products__brand">
+          <span>{{ `Бренд: ${propsProduct.brand}` }}</span>
+        </div>
+        <div class="products__price">
+          <span>{{ `Цена: ${propsProduct.price} р` }}</span>
+        </div>
+        <div class="products__amount">
+          <span>{{ `В наличие ${propsProduct.amount} шт.` }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -11,9 +26,21 @@
 export default {
   name: "CatalogProducts",
   components: {},
-  props: {},
+  props: {
+    product: {
+      type: Object,
+      required: true
+    }
+  },
   data: () => ({}),
-  computed: {},
+  computed: {
+    propsProduct() {
+      return this.product || {};
+    },
+    getImage() {
+      return require(`../assets/${this.propsProduct.image}`);
+    }
+  },
   methods: {}
 };
 </script>

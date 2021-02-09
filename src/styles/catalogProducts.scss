@@ -1,12 +1,7 @@
-@import 'responsive';
-@import 'variables';
-
-.products__container {
+.products__content-wrapper {
   background: #fff;
-
-  max-width: 400px;
-  max-width: 300px;
-
+  max-width: 200px;
+  height: 300px;
   padding: 10px;
 
   &:hover {
@@ -16,7 +11,31 @@
   }
 }
 
-img {
-  width: 150px;
-  height: 150px;
+.products__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.products__link {
+  margin-bottom: 10px;
+  a {
+    display: flex;
+    flex-direction: column;
+  }
+  img {
+    width: 100px;
+    height: 100px;
+  }
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.products__brand {
+  margin-bottom: 10px;
+}
+
+.products__price {
+  margin-bottom: 10px;
 }

@@ -1,42 +1,56 @@
 <template>
-  <div>
-    <div class="filter__container">
-      <form class="filter__form form" action="">
+  <div class="filter">
+    <div class="filter__content-wrapper">
+      <div class="filter__content">
         <p>Поиск</p>
         <div>
           <input
-            class="form__input"
+            class="filter__search"
             autocomplete="off"
-            name="search"
-            placeholder="Поиск по категории"
+            placeholder="Поиск по названию"
             @input="updateSearch($event.target.value)"
           />
         </div>
         <p>Бренд</p>
-        <Multiselect v-model="multiselectValue" :options="multiselectOptions" />
+        <Multiselect v-model="selectValue" :options="selectOptions" />
         <p>Параметры</p>
-        <div class="form__checkbox">
+        <div class="filter__checkbox">
           <div
-            class="form__checkbox-item"
-            v-for="option of checkboxValue"
-            :key="option.name"
+            class="filter__checkbox-item"
+            v-for="option of checkboxOptions"
+            :key="option"
           >
             <input
-              :id="option.name"
               type="checkbox"
-              :checked="option.selected"
-              @change="changeChackbox(option.name)"
+              :id="option"
+              :value="option"
+              v-model="checkboxValue"
             />
-            <label :for="option.name">{{ option.name }}</label>
+            <label :for="option">{{ option }}</label>
           </div>
         </div>
         <p>Цена</p>
-        <div class="form__range">
-          <input class="form__range-input" type="number" placeholder="От" />
-          <input class="form__range-input" type="number" placeholder="До" />
+        <div class="filter__range">
+          <input
+            class="filter__range-input"
+            type="number"
+            placeholder="От"
+            min="0"
+            @input="updateRange($event.target.value, 'from')"
+          />
+          <input
+            class="filter__range-input"
+            type="number"
+            placeholder="До"
+            min="0"
+            @input="updateRange($event.target.value, 'to')"
+          />
         </div>
-      </form>
-      <p>{{ searchValue }}</p>
+
+        <div class="filter__clear-btn" @click="clearFilter()">
+          <span>Сбросить</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -46,55 +60,68 @@ import Multiselect from "./Multiselect";
 export default {
   name: "ProductFilter",
   components: { Multiselect },
-  props: {},
+  props: {
+    selectOptions: {
+      type: Array,
+      required: true
+    },
+    checkboxOptions: {
+      type: Array,
+      required: true
+    }
+  },
   data: () => ({
     searchValue: "",
-    multiselectValue: [],
-    multiselectOptions: [
-      "Opt-1",
-      "Opt-2",
-      "Opt-3.1",
-      "Opt-3",
-      "Opt-4",
-      "Opt-5",
-      "Opt-6",
-      "Opt-7",
-      "Opt-8s"
-    ],
-    checkboxValue: [
-      { name: "Opt-1", selected: null },
-      { name: "Opt-2", selected: null },
-      { name: "Opt-3", selected: null },
-      { name: "Opt-4", selected: null },
-      { name: "Opt-5", selected: null },
-      { name: "Opt-6", selected: null }
-    ],
+    selectValue: [],
+    checkboxValue: [],
     rangeValue: {
       from: null,
       to: null
     }
   }),
-  computed: {},
   methods: {
     updateSearch(value) {
       const search = value.toLowerCase().trim() || "";
       this.searchValue = search;
+      this.emitFilterValue();
     },
-    changeChackbox(option) {
-      const newArray = this.checkboxValue.map(elem => {
-        if (elem.name === option) {
-          return {
-            name: elem.name,
-            selected: !elem.selected
-          };
-        } else return elem;
-      });
-      this.checkboxValue = newArray;
+    updateRange(value, name) {
+      this.rangeValue[name] = +value;
+      this.emitFilterValue();
     },
-    updateRange(value) {
-      const search = value.toLowerCase().trim() || "";
-      this.searchValue = search;
+    emitFilterValue() {
+      const filterValue = {
+        searchValue: this.searchValue,
+        selectValue: this.selectValue,
+        checkboxValue: this.checkboxValue,
+        rangeValue: this.rangeValue
+      };
+      this.$emit("filterValue", filterValue);
+    },
+    clearFilter() {
+      this.searchValue = "";
+      this.selectValue = [];
+      this.checkboxValue = [];
+      this.rangeValue.from = 0;
+      this.rangeValue.to = 0;
     }
+  },
+  watch: {
+    selectValue() {
+      this.emitFilterValue();
+    },
+    checkboxValue() {
+      this.emitFilterValue();
+    },
+    "rangeValue.from"() {
+      this.emitFilterValue();
+    },
+    "rangeValue.to"() {
+      this.emitFilterValue();
+    }
+  },
+  mounted() {
+    this.emitFilterValue();
   }
 };
 </script>

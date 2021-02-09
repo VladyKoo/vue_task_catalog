@@ -1,6 +1,3 @@
-@import 'responsive';
-@import 'variables';
-
 .multiselect {
   display: block;
   position: relative;
@@ -83,16 +80,6 @@
   height: 34px;
   width: 100%;
   background: transparent;
-}
-
-.multiselect__overlay-enter-active,
-.multiselect__overlay-leave-active {
-  transition: all 0.5s ease;
-}
-
-.multiselect__overlay-enter,
-.multiselect__overlay-leave-to {
-  opacity: 0;
 }
 
 .multiselect__content-wrapper {

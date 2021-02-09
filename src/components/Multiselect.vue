@@ -31,33 +31,31 @@
         />
       </div>
 
-      <transition name="multiselect__overlay">
-        <div class="multiselect__content-wrapper" v-show="isOpen">
-          <ul class="multiselect__content">
-            <template>
-              <li v-for="(option, index) of filteredOptions" :key="index">
-                <span
-                  class="multiselect__option"
-                  :class="optionSelected(option)"
-                  @click.stop="selectOption(option)"
-                >
-                  {{ option }}
-                </span>
-              </li>
-            </template>
-            <li v-show="options.length > 0 && filteredOptions.length === 0">
-              <span class="multiselect__option">
-                Элемент не найден.
+      <div class="multiselect__content-wrapper" v-show="isOpen">
+        <ul class="multiselect__content">
+          <template>
+            <li v-for="(option, index) of filteredOptions" :key="index">
+              <span
+                class="multiselect__option"
+                :class="optionSelected(option)"
+                @click.stop="selectOption(option)"
+              >
+                {{ option }}
               </span>
             </li>
-            <li v-show="options.length === 0">
-              <span class="multiselect__option">
-                Лист пуст.
-              </span>
-            </li>
-          </ul>
-        </div>
-      </transition>
+          </template>
+          <li v-show="options.length > 0 && filteredOptions.length === 0">
+            <span class="multiselect__option">
+              Элемент не найден.
+            </span>
+          </li>
+          <li v-show="options.length === 0">
+            <span class="multiselect__option">
+              Лист пуст.
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
